@@ -58,6 +58,9 @@ class HeidelbergSensorEntityDescription(SensorEntityDescription):
 
     capability: type[Capability]
 
+    # Optional: display-unit divisor for values on raw wire form.
+    multiplier: float | None = None
+
 
 SENSOR_TYPES: tuple[HeidelbergSensorEntityDescription, ...] = (
     HeidelbergSensorEntityDescription(
@@ -206,6 +209,7 @@ SENSOR_TYPES: tuple[HeidelbergSensorEntityDescription, ...] = (
         entity_category=EntityCategory.DIAGNOSTIC,
         suggested_display_precision=1,
         capability=CoreCapability,
+        multiplier=10,
     ),
     HeidelbergSensorEntityDescription(
         key=DATA_HW_MAX_CURR,
