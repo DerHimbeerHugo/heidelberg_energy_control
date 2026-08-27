@@ -4,23 +4,23 @@
 [![Maintenance](https://img.shields.io/badge/maintained-yes-brightgreen.svg)](https://github.com/Schrolli91/heidelberg_energy_control/graphs/commit-activity)
 [![GitHub Last Commit](https://img.shields.io/github/last-commit/Schrolli91/heidelberg_energy_control?style=flat-square)](https://github.com/Schrolli91/heidelberg_energy_control/commits/main)
 
-# Heidelberg Energy Control for Home Assistant
+# Heidelberg/Amperfied Integration for Home Assistant
 
 ![Heidelberg](https://github.com/Schrolli91/heidelberg_energy_control/blob/main/banner.png?raw=true)
 
-This integration allows you to monitor and control your **Heidelberg Energy Control** wallbox in Home Assistant via Modbus TCP.
+This integration allows you to monitor and control your **Heidelberg/Amperfied** wallbox in Home Assistant via Modbus TCP.
 
 ## Overview
 The Heidelberg Energy Control wallbox supports the Modbus RTU protocol for external control. Since Home Assistant communicates over your network, a **Modbus TCP to RTU gateway** (like a PE11 or similar) is typically required to bridge the connection unless your wallbox is equipped with a native network interface.
 
-### Heidelberg Connect Series
+### Heidelberg/Amperfied Connect Series
 This integration also supports the **Heidelberg Connect series** (heidelberg.home and heidelberg.solar). These wallboxes feature a native network interface and support Modbus TCP directly, eliminating the need for an external gateway.
 
 **Note:** Support for the Connect series is currently in **beta stage**.
 
 If you encounter any problems or have suggestions for improvements, please report them on our [Issues page](https://github.com/Schrolli91/heidelberg_energy_control/issues).
 
-Fully compatible with the evcc home assitant charger.
+Fully compatible with the evcc home assistant charger.
 
 ### Other Wallboxes
 The integration also supports other wallboxes which will follow the Heidelberg Modbus Layout.
