@@ -17,13 +17,13 @@ from unittest.mock import AsyncMock, MagicMock
 
 from pymodbus.exceptions import ModbusException
 
-from custom_components.heidelberg_energy_control.const import DATA_SESSION_ENERGY
-from custom_components.heidelberg_energy_control.core.capabilities.session_energy import (
+from custom_components.amperfied_connect_modbus.const import DATA_SESSION_ENERGY
+from custom_components.amperfied_connect_modbus.core.capabilities.session_energy import (
     REG_SESSION_ENERGY_COUNT,
     REG_SESSION_ENERGY_START,
     SessionEnergyCapability,
 )
-from custom_components.heidelberg_energy_control.core.registers import (
+from custom_components.amperfied_connect_modbus.core.registers import (
     RegisterDefinition,
     RegisterType,
 )

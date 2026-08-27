@@ -16,7 +16,7 @@ from unittest.mock import AsyncMock, MagicMock
 
 from pymodbus.exceptions import ModbusException
 
-from custom_components.heidelberg_energy_control.const import (
+from custom_components.amperfied_connect_modbus.const import (
     DATA_MID_CURRENT_L1,
     DATA_MID_CURRENT_L2,
     DATA_MID_CURRENT_L3,
@@ -27,7 +27,7 @@ from custom_components.heidelberg_energy_control.const import (
     DATA_MID_VOLTAGE_L2,
     DATA_MID_VOLTAGE_L3,
 )
-from custom_components.heidelberg_energy_control.core.capabilities.mid_meter import (
+from custom_components.amperfied_connect_modbus.core.capabilities.mid_meter import (
     REG_MID_AVAILABLE,
     REG_MID_FORWARD_COUNT,
     REG_MID_FORWARD_START,
@@ -35,7 +35,7 @@ from custom_components.heidelberg_energy_control.core.capabilities.mid_meter imp
     REG_MID_REVERSE_START,
     MidMeterCapability,
 )
-from custom_components.heidelberg_energy_control.core.registers import (
+from custom_components.amperfied_connect_modbus.core.registers import (
     RegisterDefinition,
     RegisterType,
 )
