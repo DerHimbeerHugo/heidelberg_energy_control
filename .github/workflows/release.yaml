@@ -1,9 +1,7 @@
 name: Create HACS Release
 
 on:
-  push:
-    branches:
-      - main
+  workflow_dispatch:
 
 jobs:
   release:
@@ -22,7 +20,7 @@ jobs:
         id: manifest_version
         run: |
           # Extract version string from manifest.json
-          VERSION=$(grep '"version"' custom_components/heidelberg_energy_control/manifest.json | cut -d '"' -f 4)
+          VERSION=$(grep '"version"' custom_components/amperfied_connect_modbus/manifest.json | cut -d '"' -f 4)
           echo "version=$VERSION" >> $GITHUB_OUTPUT
 
           # Check if version is a pre-release (contains a hyphen, e.g., 0.9.0-beta)
