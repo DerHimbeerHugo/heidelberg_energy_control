@@ -1,103 +1,94 @@
-[![hacs_badge](https://img.shields.io/badge/HACS-Default-orange.svg)](https://github.com/hacs/integration)
-[![GitHub Release](https://img.shields.io/github/v/release/Schrolli91/heidelberg_energy_control?style=flat-square)](https://github.com/Schrolli91/heidelberg_energy_control/releases)
-[![License](https://img.shields.io/github/license/Schrolli91/heidelberg_energy_control?style=flat-square)](https://github.com/Schrolli91/heidelberg_energy_control/blob/main/LICENSE)
-[![Maintenance](https://img.shields.io/badge/maintained-yes-brightgreen.svg)](https://github.com/Schrolli91/heidelberg_energy_control/graphs/commit-activity)
-[![GitHub Last Commit](https://img.shields.io/github/last-commit/Schrolli91/heidelberg_energy_control?style=flat-square)](https://github.com/Schrolli91/heidelberg_energy_control/commits/main)
+# Amperfied Connect Modbus
 
-# Heidelberg/Amperfied Integration for Home Assistant
+Home Assistant integration for Amperfied Connect wallboxes using the local
+Modbus TCP interface.
 
-![Heidelberg](https://github.com/Schrolli91/heidelberg_energy_control/blob/main/banner.png?raw=true)
+I started this project for my own Connect wallbox. The existing Heidelberg
+integration already covered the basic registers, but I wanted the Eco mode,
+the internal phase switch and the end of a charging session to work together
+without several separate Home Assistant automations.
 
-This integration allows you to monitor and control your **Heidelberg/Amperfied** wallbox in Home Assistant via Modbus TCP.
+The integration is still young and has been tested on a Connect wallbox with
+register layout `2.0.4`.
 
-## Overview
-The Heidelberg Energy Control wallbox supports the Modbus RTU protocol for external control. Since Home Assistant communicates over your network, a **Modbus TCP to RTU gateway** (like a PE11 or similar) is typically required to bridge the connection unless your wallbox is equipped with a native network interface.
+## What it does
 
-### Heidelberg/Amperfied Connect Series
-This integration also supports the **Heidelberg Connect series** (heidelberg.home and heidelberg.solar). These wallboxes feature a native network interface and support Modbus TCP directly, eliminating the need for an external gateway.
+- reads charging state, power, current, energy and diagnostic values;
+- controls the charge-current limit and charge enable;
+- switches the wallbox between Eco and manual charging;
+- selects one- or three-phase charging on wallboxes with an internal phase
+  switch;
+- provides a **Stop charging** button for the current session;
+- restores charge enable after the vehicle is unplugged, ready for the next
+  RFID-authorized session.
 
-**Note:** Support for the Connect series is currently in **beta stage**.
+When Eco mode is switched off, the integration can automatically return to
+three-phase charging. A phase change is checked after the switching time stored
+in the wallbox. If the requested state was not reached, the command is repeated
+once. It will not keep retrying in a loop.
 
-If you encounter any problems or have suggestions for improvements, please report them on our [Issues page](https://github.com/Schrolli91/heidelberg_energy_control/issues).
+The manual phase selector is unavailable while Eco mode is active because the
+wallbox controls the phases itself in that mode.
 
-Fully compatible with the evcc home assistant charger.
+## Stop charging and Remote Lock
 
-### Other Wallboxes
-The integration also supports other wallboxes which will follow the Heidelberg Modbus Layout.
-These wallboxes are:
-- tbd
+The **Stop charging** button sets the charge-current command to zero. Once the
+vehicle is unplugged, the previous current limit is restored automatically.
 
-## Installation via HACS
-This integration is part of the **HACS Default Store**. To install it:
+This is separate from **Remote Lock**. Remote Lock blocks the wallbox globally;
+it does not release the charging cable. Depending on the vehicle, it may still
+need to be unlocked before the cable can be removed.
 
-1. In Home Assistant, navigate to **HACS**.
-2. Search for **Heidelberg Energy Control**.
-3. Click **Download** and choose the latest version.
-4. **Restart Home Assistant.**
+## Installation with HACS
 
-## Configuration
-Once restarted, you can set up the integration through the UI:
+Until the integration is included in the default HACS list, add this repository
+as a custom repository:
 
-1. Go to **Settings** > **Devices & Services**.
-2. Click **Add Integration**.
-3. Search for **Heidelberg Energy Control**.
-4. Enter the required details:
-    * **Display Name**: A name for your wallbox (e.g., "Garage Wallbox").
-    * **Host**: The IP address of your Modbus TCP gateway.
-    * **Port**: Usually `502`.
-    * **Slave ID**: The Modbus ID of your wallbox (default is often `1`).
+`https://github.com/DerHimbeerHugo/heidelberg_energy_control`
 
-### Options (Dynamic Configuration)
-After the initial setup, you can adjust settings without restarting:
-1. Go to **Settings** > **Devices & Services**.
-2. Find the **Heidelberg Energy Control** entry.
-3. Click **Configure**.
-4. **Polling Interval**: Adjust how often data is requested (between 3 and 30 seconds / Defaults to 10 seconds).
+Select **Integration** as the repository type, install **Amperfied Connect
+Modbus**, restart Home Assistant and add the integration under **Settings ->
+Devices & services**.
 
-## Features
-This integration provides a comprehensive set of entities to monitor and control your wallbox:
+The wallbox accepts only one Modbus TCP connection. Do not run this integration
+and another Modbus integration for the same wallbox at the same time.
 
-#### 🎮 Controls
-* **Charge Enable**: Toggle to start or stop the charging process.
-* **Charging Current Limit**: Adjust the maximum allowed charging current (6A - 16A).
-* **Remote Lock**: Disable and lock the charging process to prevent unauthorized use.
-* **Standby Mode**: Enable or disable the wallbox power-saving standby function (requires firmware ≥ 1.0.8).
-* **Watchdog & FailSafe**: Configure the wallbox's built-in safety net for Home Assistant comms loss — Watchdog Timeout (s; 0 disables) and FailSafe Current (A) that takes over if HA stops polling. Requires firmware ≥ 1.0.8.
+## Options
 
-#### 📊 Monitoring (Sensors)
-* **Charging Power**: Real-time power consumption in Watts.
-* **Energy Session**: Energy consumed during the current or last charging session (kWh).
-* **Energy Total**: Energy consumed since the wallbox installed (kWh).
-* **Energy Since Power On**: Energy consumed since the wallbox was powered on (kWh).
-* **Vehicle Status**: Shows the current state of the vehicle (e.g., Standby, Charging).
-* **Vehicle Connection**: Indicates if a vehicle is plugged into the wallbox.
-* **Phases Active**: Number of active phases (1-3).
-* **Target Current**: Currently set target current on the wallbox (A).
+The integration can be configured under **Settings -> Devices & services ->
+Amperfied Connect Modbus -> Configure**.
 
-#### 🔍 Diagnostics & Advanced Data
-* **Total Energy**: Lifetime energy consumption of the wallbox.
-* **Phase-specific Data**: Individual monitoring of Voltage (V) and Current (A) for each phase (**L1, L2, L3**).
-* **Hardware Limit (Min and Max)**: Displays the physical current limit, set via modbus on the wallbox.
-* **External Lock**: Status of the hardware lock contact.
-* **Internal Temperature**: Monitor the housing temperature of the wallbox.
+Available options:
 
-#### 🏠 Local Control
-* **No Cloud Required**: Works completely offline via your local network.
-* **Fast Updates**: Direct communication via Modbus TCP for near real-time data (Configurable update interval).
-* **EVCC Compatible**: Integrates seamless with the evcc home assitant charger.
+- polling interval;
+- return to three phases when Eco mode is disabled;
+- verify phase switching and retry once;
+- restore charge enable after the vehicle is unplugged.
 
-## Disclaimer
-**This is a private, community-driven project. It is NOT an official integration from Heidelberg (Amperfied).**
-The author(s) of this integration are not responsible for any damage to your hardware, wallbox, vehicle, or electrical system. Use this integration at your own risk.
+The three behavior options are enabled by default.
 
-* Modbus communication directly influences the charging behavior; ensure your gateway and network are stable.
-* Always follow the official manual provided by Heidelberg for wiring and safety instructions.
+## Compatibility
 
-## Removal
-To remove the integration:
+Eco and phase-switch entities are added only when the corresponding Modbus
+registers are available. The phase functions require Connect Solar / Solar Pro
+hardware with the internal phase-switch contactor.
 
-1. Go to **Settings** > **Devices & Services**.
-2. Find the **Heidelberg Energy Control** entry.
-3. Click the three-dot menu and select **Delete**.
-4. Confirm the deletion.
-5. Restart Home Assistant.
+Register definitions are based on the official
+[Modbus documentation for the Connect series](https://www.amperfied.de/wp-content/uploads/2025/05/Documentation-Modbus-Register-Layout-connect-series-20250422.pdf).
+
+If you use the integration with another Connect model or register-layout
+version, feedback is welcome through the GitHub issue tracker.
+
+## Credits and license
+
+This project is based on Bastian Schroll's
+[`heidelberg_energy_control`](https://github.com/Schrolli91/heidelberg_energy_control)
+integration and keeps its MIT license and copyright notice.
+
+Amperfied and Heidelberg product names are used only to identify compatible
+hardware. This is an independent community project and is not affiliated with
+or endorsed by the manufacturer.
+
+Modbus commands directly affect charging behavior. Use the integration only
+with compatible hardware and follow the wallbox and electrical-installation
+instructions.

@@ -20,13 +20,13 @@ from __future__ import annotations
 
 from unittest.mock import MagicMock
 
-from custom_components.heidelberg_energy_control.const import (
+from custom_components.amperfied_connect_modbus.const import (
     COMMAND_TARGET_CURRENT,
     COMMAND_WATCHDOG_TIMEOUT,
     DATA_HW_MAX_CURR,
     DATA_REG_LAYOUT_VER,
 )
-from custom_components.heidelberg_energy_control.coordinator import (
+from custom_components.amperfied_connect_modbus.coordinator import (
     HeidelbergEnergyControlCoordinator,
 )
 

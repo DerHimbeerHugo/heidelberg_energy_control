@@ -1,4 +1,4 @@
-# Version Dependency Analysis: Heidelberg Energy Control Integration
+# Version Dependency Analysis: Amperfied Connect Modbus Integration
 
 ## Executive Summary
 

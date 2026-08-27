@@ -15,13 +15,13 @@ from unittest.mock import AsyncMock, MagicMock
 
 import pytest
 
-from custom_components.heidelberg_energy_control.core.api import (
+from custom_components.amperfied_connect_modbus.core.api import (
     HeidelbergEnergyControlAPI,
 )
-from custom_components.heidelberg_energy_control.core.exceptions import (
+from custom_components.amperfied_connect_modbus.core.exceptions import (
     HeidelbergEnergyControlReadError,
 )
-from custom_components.heidelberg_energy_control.core.registers import (
+from custom_components.amperfied_connect_modbus.core.registers import (
     RegisterDefinition,
     RegisterType,
 )
@@ -106,9 +106,7 @@ async def test_consecutive_definitions_with_multi_register_counts():
 async def test_non_consecutive_input_definitions_become_separate_reads():
     """Defs at 5 and 100 (with a gap) issue two reads."""
     api, client = _api_with_mock_client()
-    client.read_input_registers = AsyncMock(
-        side_effect=[_ok([100]), _ok([16, 6])]
-    )
+    client.read_input_registers = AsyncMock(side_effect=[_ok([100]), _ok([16, 6])])
 
     result = await api.async_read_registers(
         [
@@ -187,9 +185,7 @@ async def test_modbus_error_response_raises_read_error():
     client.read_input_registers = AsyncMock(return_value=_err())
 
     with pytest.raises(HeidelbergEnergyControlReadError):
-        await api.async_read_registers(
-            [RegisterDefinition(5, 1, RegisterType.INPUT)]
-        )
+        await api.async_read_registers([RegisterDefinition(5, 1, RegisterType.INPUT)])
 
 
 async def test_modbus_exception_wrapped_as_read_error():
@@ -199,6 +195,4 @@ async def test_modbus_exception_wrapped_as_read_error():
     client.read_input_registers = AsyncMock(side_effect=ModbusException("boom"))
 
     with pytest.raises(HeidelbergEnergyControlReadError):
-        await api.async_read_registers(
-            [RegisterDefinition(5, 1, RegisterType.INPUT)]
-        )
+        await api.async_read_registers([RegisterDefinition(5, 1, RegisterType.INPUT)])

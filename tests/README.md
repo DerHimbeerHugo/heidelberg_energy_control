@@ -1,6 +1,6 @@
 # Tests
 
-Pytest suite for the Heidelberg Energy Control integration. Tests are characterization tests — they pin today's behavior so refactors (capability framework, new feature groups) can be reviewed against an executable contract rather than a prose description.
+Pytest suite for the Amperfied Connect Modbus integration. Tests are characterization tests — they pin today's behavior so refactors (capability framework, new feature groups) can be reviewed against an executable contract rather than a prose description.
 
 ## Setup
 

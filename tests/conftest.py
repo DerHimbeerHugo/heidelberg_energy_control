@@ -1,4 +1,4 @@
-"""Shared fixtures for the Heidelberg Energy Control test suite."""
+"""Shared fixtures for the Amperfied Connect Modbus test suite."""
 
 from __future__ import annotations
 
@@ -7,7 +7,6 @@ from pathlib import Path
 from unittest.mock import AsyncMock, MagicMock
 
 import pytest
-
 
 FIXTURES_DIR = Path(__file__).parent / "fixtures"
 
@@ -56,6 +55,7 @@ def build_mock_modbus_client(fixture: dict[str, list[int]]) -> MagicMock:
         (100, "input_100_101_hw_curr"),
         (200, "input_200_hw_vers"),
         (203, "input_203_sw_vers"),
+        (1250, "input_1250_1290_firmware"),
         (3000, "input_3000_mid_available"),
         (3001, "input_3001_3009_mid_forward"),
         (3011, "input_3011_3012_mid_reverse"),

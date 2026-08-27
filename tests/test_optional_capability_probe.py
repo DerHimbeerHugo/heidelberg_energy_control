@@ -29,18 +29,17 @@ from unittest.mock import AsyncMock, MagicMock
 
 from pymodbus.exceptions import ModbusException
 
-from custom_components.heidelberg_energy_control.core.api import (
+from custom_components.amperfied_connect_modbus.core.api import (
     HeidelbergEnergyControlAPI,
 )
-from custom_components.heidelberg_energy_control.core.capabilities.standby import (
+from custom_components.amperfied_connect_modbus.core.capabilities.standby import (
     REG_COMMAND_STANDBY,
     StandbyCapability,
 )
-from custom_components.heidelberg_energy_control.core.capabilities.watchdog import (
+from custom_components.amperfied_connect_modbus.core.capabilities.watchdog import (
     REG_WATCHDOG_TIMEOUT,
     WatchdogCapability,
 )
-
 
 # ---------- probe: watchdog ----------
 
@@ -154,7 +153,7 @@ def _connect_series_client() -> MagicMock:
         return rr
 
     input_reads = {
-        (4, 1): [0x204],       # layout 2.0.4 — passes 1.0.8 gate for both caps
+        (4, 1): [0x204],  # layout 2.0.4 — passes 1.0.8 gate for both caps
         (100, 2): [16, 6],
         (200, 1): [3],
         (203, 1): [3],

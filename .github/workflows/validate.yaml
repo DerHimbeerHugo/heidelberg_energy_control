@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - amperfied-connect
   pull_request:
   schedule:
     - cron:  '0 0 * * *'
@@ -25,4 +26,3 @@ jobs:
           uses: "hacs/action@main"
           with:
             category: "integration"
-

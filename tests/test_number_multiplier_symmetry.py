@@ -15,23 +15,22 @@ from __future__ import annotations
 
 from unittest.mock import AsyncMock, MagicMock
 
-from custom_components.heidelberg_energy_control.classes.heidelberg_number import (
+from custom_components.amperfied_connect_modbus.classes.heidelberg_number import (
     HeidelbergNumber,
 )
-from custom_components.heidelberg_energy_control.classes.heidelberg_sensor import (
+from custom_components.amperfied_connect_modbus.classes.heidelberg_sensor import (
     HeidelbergSensor,
 )
-from custom_components.heidelberg_energy_control.const import COMMAND_TARGET_CURRENT
+from custom_components.amperfied_connect_modbus.const import COMMAND_TARGET_CURRENT
 
 
 def _mock_coordinator(data: dict) -> MagicMock:
     coord = MagicMock()
     coord.data = data
-    # Entity base __init__ builds DeviceInfo from static_data — needs all three
-    # version fields to concatenate the "v" prefix without a TypeError.
+    # Entity base __init__ builds DeviceInfo from static data.
     coord.static_data = {
         "reg_layout_ver": "1.0.8",
-        "hw_version": "1.0.0",
+        "hw_variant": 1,
         "sw_version": "1.0.8",
     }
     coord.api = MagicMock()
@@ -76,9 +75,7 @@ async def test_number_write_multiplies_and_stores_raw():
 
     await entity.async_set_native_value(12.0)
 
-    coord.api.async_write_command.assert_awaited_once_with(
-        COMMAND_TARGET_CURRENT, 120
-    )
+    coord.api.async_write_command.assert_awaited_once_with(COMMAND_TARGET_CURRENT, 120)
     assert coord.data[COMMAND_TARGET_CURRENT] == 120
 
 
@@ -89,9 +86,7 @@ async def test_number_write_passthrough_when_multiplier_is_none():
 
     await entity.async_set_native_value(42.0)
 
-    coord.api.async_write_command.assert_awaited_once_with(
-        COMMAND_TARGET_CURRENT, 42
-    )
+    coord.api.async_write_command.assert_awaited_once_with(COMMAND_TARGET_CURRENT, 42)
     assert coord.data[COMMAND_TARGET_CURRENT] == 42
 
 

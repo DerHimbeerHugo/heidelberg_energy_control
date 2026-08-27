@@ -17,27 +17,26 @@ from unittest.mock import AsyncMock, MagicMock
 
 import pytest
 
-from custom_components.heidelberg_energy_control.const import (
+from custom_components.amperfied_connect_modbus.const import (
     COMMAND_FAILSAFE_CURRENT,
     COMMAND_REMOTE_LOCK,
     COMMAND_WATCHDOG_TIMEOUT,
 )
-from custom_components.heidelberg_energy_control.core.api import (
+from custom_components.amperfied_connect_modbus.core.api import (
     HeidelbergEnergyControlAPI,
 )
-from custom_components.heidelberg_energy_control.core.capabilities.watchdog import (
+from custom_components.amperfied_connect_modbus.core.capabilities.watchdog import (
     REG_FAILSAFE_CURRENT,
     REG_WATCHDOG_TIMEOUT,
     WatchdogCapability,
 )
-from custom_components.heidelberg_energy_control.core.exceptions import (
+from custom_components.amperfied_connect_modbus.core.exceptions import (
     HeidelbergEnergyControlWriteError,
 )
-from custom_components.heidelberg_energy_control.core.registers import (
+from custom_components.amperfied_connect_modbus.core.registers import (
     RegisterDefinition,
     RegisterType,
 )
-
 
 # ---------- version gate & polled definitions ----------
 
@@ -59,9 +58,7 @@ def test_watchdog_declares_both_holding_registers():
 def test_decode_polled_returns_raw_wire_values():
     """Both are bidirectional; capability passes raw ms and deci-amps through."""
     cap = WatchdogCapability()
-    result = cap.decode_polled(
-        {REG_WATCHDOG_TIMEOUT: 15000, REG_FAILSAFE_CURRENT: 80}
-    )
+    result = cap.decode_polled({REG_WATCHDOG_TIMEOUT: 15000, REG_FAILSAFE_CURRENT: 80})
     assert result == {
         COMMAND_WATCHDOG_TIMEOUT: 15000,
         COMMAND_FAILSAFE_CURRENT: 80,
@@ -71,9 +68,7 @@ def test_decode_polled_returns_raw_wire_values():
 def test_decode_polled_watchdog_disabled():
     """Timeout 0 means the watchdog is disabled on the wallbox."""
     cap = WatchdogCapability()
-    result = cap.decode_polled(
-        {REG_WATCHDOG_TIMEOUT: 0, REG_FAILSAFE_CURRENT: 0}
-    )
+    result = cap.decode_polled({REG_WATCHDOG_TIMEOUT: 0, REG_FAILSAFE_CURRENT: 0})
     assert result[COMMAND_WATCHDOG_TIMEOUT] == 0
     assert result[COMMAND_FAILSAFE_CURRENT] == 0
 

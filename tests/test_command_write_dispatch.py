@@ -18,18 +18,24 @@ from unittest.mock import AsyncMock, MagicMock
 
 import pytest
 
-from custom_components.heidelberg_energy_control.const import (
+from custom_components.amperfied_connect_modbus.const import (
+    COMMAND_PHASE_SWITCH,
     COMMAND_REMOTE_LOCK,
     COMMAND_TARGET_CURRENT,
 )
-from custom_components.heidelberg_energy_control.core.api import (
+from custom_components.amperfied_connect_modbus.core.api import (
     HeidelbergEnergyControlAPI,
 )
-from custom_components.heidelberg_energy_control.core.capabilities.core import (
+from custom_components.amperfied_connect_modbus.core.capabilities.core import (
     REG_COMMAND_REMOTE_LOCK,
     REG_COMMAND_TARGET_CURRENT,
 )
-from custom_components.heidelberg_energy_control.core.exceptions import (
+from custom_components.amperfied_connect_modbus.core.capabilities.phase_switch import (
+    PHASE_ONE,
+    REG_PHASE_SWITCH_CONTROL,
+    PhaseSwitchCapability,
+)
+from custom_components.amperfied_connect_modbus.core.exceptions import (
     HeidelbergEnergyControlWriteError,
 )
 
@@ -74,6 +80,19 @@ async def test_remote_lock_command_writes_register_259():
     assert result is True
     client.write_register.assert_awaited_once_with(
         address=REG_COMMAND_REMOTE_LOCK, value=0, device_id=1
+    )
+
+
+async def test_phase_switch_command_writes_register_501():
+    """COMMAND_PHASE_SWITCH is dispatched to the optional phase capability."""
+    api, client = _api_with_mock_client()
+    api._capabilities.append(PhaseSwitchCapability())
+
+    result = await api.async_write_command(COMMAND_PHASE_SWITCH, PHASE_ONE)
+
+    assert result is True
+    client.write_register.assert_awaited_once_with(
+        address=REG_PHASE_SWITCH_CONTROL, value=PHASE_ONE, device_id=1
     )
 
 

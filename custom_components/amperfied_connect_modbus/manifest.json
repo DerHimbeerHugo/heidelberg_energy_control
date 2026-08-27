@@ -1,0 +1,16 @@
+{
+  "domain": "amperfied_connect_modbus",
+  "name": "Amperfied Connect Modbus",
+  "codeowners": [
+    "@DerHimbeerHugo"
+  ],
+  "config_flow": true,
+  "documentation": "https://github.com/DerHimbeerHugo/heidelberg_energy_control",
+  "integration_type": "device",
+  "iot_class": "local_polling",
+  "issue_tracker": "https://github.com/DerHimbeerHugo/heidelberg_energy_control/issues",
+  "requirements": [
+    "pymodbus>=3.11.2"
+  ],
+  "version": "0.2.0-b0"
+}

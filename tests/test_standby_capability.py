@@ -14,25 +14,24 @@ from unittest.mock import AsyncMock, MagicMock
 
 import pytest
 
-from custom_components.heidelberg_energy_control.const import (
+from custom_components.amperfied_connect_modbus.const import (
     COMMAND_REMOTE_LOCK,
     COMMAND_STANDBY,
 )
-from custom_components.heidelberg_energy_control.core.api import (
+from custom_components.amperfied_connect_modbus.core.api import (
     HeidelbergEnergyControlAPI,
 )
-from custom_components.heidelberg_energy_control.core.capabilities.standby import (
+from custom_components.amperfied_connect_modbus.core.capabilities.standby import (
     REG_COMMAND_STANDBY,
     StandbyCapability,
 )
-from custom_components.heidelberg_energy_control.core.exceptions import (
+from custom_components.amperfied_connect_modbus.core.exceptions import (
     HeidelbergEnergyControlWriteError,
 )
-from custom_components.heidelberg_energy_control.core.registers import (
+from custom_components.amperfied_connect_modbus.core.registers import (
     RegisterDefinition,
     RegisterType,
 )
-
 
 # ---------- version gate & polled definitions ----------
 
