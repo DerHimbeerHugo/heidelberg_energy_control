@@ -67,6 +67,13 @@ Available options:
 
 The three behavior options are enabled by default.
 
+## Changing the wallbox address
+
+If the IP address or Modbus settings change, open **Settings -> Devices &
+services -> Amperfied Connect Modbus**, open the integration menu and select
+**Reconfigure**. The new connection is tested before it is saved. The existing
+device, entities, history and automations remain in place.
+
 ## Compatibility
 
 Eco and phase-switch entities are added only when the corresponding Modbus

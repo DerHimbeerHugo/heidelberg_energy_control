@@ -57,7 +57,6 @@ async def validate_input(data: dict[str, Any]) -> dict[str, Any]:
 
     try:
         static_data = await api.async_get_static_data()
-        await api.disconnect()
 
         if static_data is None:
             raise HeidelbergEnergyControlReadError(
@@ -71,6 +70,8 @@ async def validate_input(data: dict[str, Any]) -> dict[str, Any]:
     except Exception as err:
         _LOGGER.error("Unexpected validation error: %s", err)
         raise HeidelbergEnergyControlAPIError(f"Validation failed: {err}") from err
+    finally:
+        await api.disconnect()
 
     return {"title": data[CONF_NAME]}
 
@@ -79,6 +80,58 @@ class HeidelbergEnergyControlConfigFlow(ConfigFlow, domain=DOMAIN):
     """Handle a config flow for Amperfied Connect Modbus."""
 
     VERSION = 1
+
+    async def async_step_reconfigure(
+        self, user_input: dict[str, Any] | None = None
+    ) -> ConfigFlowResult:
+        """Update the wallbox connection without replacing the config entry."""
+        entry = self._get_reconfigure_entry()
+        errors: dict[str, str] = {}
+
+        if user_input is not None:
+            new_unique_id = f"{user_input[CONF_HOST]}-{user_input[CONF_DEVICE_ID]}"
+            duplicate_entry = self.hass.config_entries.async_entry_for_domain_unique_id(
+                DOMAIN, new_unique_id
+            )
+
+            if (
+                duplicate_entry is not None
+                and duplicate_entry.entry_id != entry.entry_id
+            ):
+                errors["base"] = "already_configured"
+            else:
+                updated_data = {**entry.data, **user_input}
+                try:
+                    await validate_input(updated_data)
+                except HeidelbergEnergyControlConnectionError:
+                    errors["base"] = "cannot_connect"
+                except HeidelbergEnergyControlReadError:
+                    errors["base"] = "invalid_data"
+                except HeidelbergEnergyControlAPIError:
+                    errors["base"] = "unknown_api_error"
+                except Exception:
+                    _LOGGER.exception("Unexpected exception")
+                    errors["base"] = "unknown"
+                else:
+                    return self.async_update_reload_and_abort(
+                        entry,
+                        unique_id=new_unique_id,
+                        data_updates=user_input,
+                    )
+
+        return self.async_show_form(
+            step_id="reconfigure",
+            data_schema=vol.Schema(
+                {
+                    vol.Required(CONF_HOST, default=entry.data[CONF_HOST]): str,
+                    vol.Required(CONF_PORT, default=entry.data[CONF_PORT]): int,
+                    vol.Required(
+                        CONF_DEVICE_ID, default=entry.data[CONF_DEVICE_ID]
+                    ): int,
+                }
+            ),
+            errors=errors,
+        )
 
     async def async_step_user(
         self, user_input: dict[str, Any] | None = None
